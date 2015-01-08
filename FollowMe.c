@@ -1,25 +1,25 @@
 /*
-*  FollowMe game solver
+*  FollowMe game solver
 *
-*  Copyright (c) 2013	Serraino Alessio
+*  Copyright (c) 2013	Serraino Alessio
 *
-*  This program is free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
+*  This program is free software; you can redistribute it and/or modify
+*  it under the terms of the GNU General Public License as published by
+*  the Free Software Foundation; either version 2 of the License, or
+*  (at your option) any later version.
 *
-*  This program is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
+*  This program is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*  GNU General Public License for more details.
 *
-*  You should have received a copy of the GNU General Public License
-*  along with this program; If not, see <http://www.gnu.org/licenses/>.
+*  You should have received a copy of the GNU General Public License
+*  along with this program; If not, see <http://www.gnu.org/licenses/>.
 */
 
 /*
-*  FollowMe is a game where you have to join two points of the same color with a path
-*  the paths can't cross eachoter and they have to fill all the grid of the game.
+*  FollowMe is a game where you have to join two points of the same color with a path
+*  the paths can't cross eachoter and they have to fill all the grid of the game.
 */
 
 #include <stdio.h>
@@ -32,14 +32,14 @@
 //#define ANIMATION
 //#define RANDOM_COLOR
 
-/* 
-*  Data.dat file format
-*  It is a text file, the first line is of the form "%d %d", the first number is the width of the game grid,
-*  the second is the height.
-*  The second line is of the form "%d" and this number contanis the number of paths
-*  each line is in the form "%d %d %d %d"
-*  the first number is x_start, the second y_start, the third x_end, the forth y_end.
-*  each line represents the two endpoints of the path.
+/* 
+*  Data.dat file format
+*  It is a text file, the first line is of the form "%d %d", the first number is the width of the game grid,
+*  the second is the height.
+*  The second line is of the form "%d" and this number contanis the number of paths
+*  each line is in the form "%d %d %d %d"
+*  the first number is x_start, the second y_start, the third x_end, the forth y_end.
+*  each line represents the two endpoints of the path.
 */
 struct _Cell { //This is one cell of the game grid
     //Each cell can be part of a path or a void cell or a external cell (this option does not exist in the game)
@@ -74,12 +74,12 @@ int FloodFillData_Len;
 __inline__ rol(long unsigned op, unsigned bits){
     __asm__ __volatile__("rol %%cl, %%eax"
     : "=r" (op)
-    : "cl"  (op), "eax" (bits) );
+    : "cl"  (op), "eax" (bits) );
 }
 __inline__ ror(long unsigned op, unsigned bits){
     __asm__ __volatile__("ror %%cl, %%eax"
     : "=r" (op)
-    : "cl"  (op), "eax" (bits) );
+    : "cl"  (op), "eax" (bits) );
 }
 */
 #define rol(operator, bit) (((operator) << (bit)) | ((operator) >> ((sizeof(operator) << 3) - (bit))))
@@ -90,14 +90,14 @@ __inline__ ror(long unsigned op, unsigned bits){
 
 #define GET_FLOOD_FILL_DATA(x, y) GET_N_BIT(FloodFillData[(((unsigned)(x) % Width) + ((unsigned)(y) % Height)*Width) >> 3], \
 ((((unsigned)(x) % Width) + ((unsigned)(y) % Height)*Width) & 0x7))
-#define SET_FLOOD_FILL_DATA(x, y, new_val) SET_N_BIT(FloodFillData[(((unsigned)(x) % Width) + ((unsigned)(y) % Height)*Width) >> 3],  \
+#define SET_FLOOD_FILL_DATA(x, y, new_val) SET_N_BIT(FloodFillData[(((unsigned)(x) % Width) + ((unsigned)(y) % Height)*Width) >> 3],  \
 ((((unsigned)(x) % Width) + ((unsigned)(y) % Height)*Width) & 0x07), \
 (new_val))
 int PrintPoint_x, PrintPoint_y;
 unsigned long long int TriedOutPaths = 0;
 #define GameCell(x, y) GameGrid[((unsigned)(x) % Width) + ((unsigned)(y) % Height)*Width]
-#define IsEmpty(c)     (!((c).Path | (c).ID))
-#define IsNotEmpty(c)  ( ((c).Path | (c).ID))
+#define IsEmpty(c)     (!((c).Path | (c).ID))
+#define IsNotEmpty(c)  ( ((c).Path | (c).ID))
 //Otptimized, but unsafe
 // #define GetCell(x, y) GameGrid[(x), (y)*Height]
 
@@ -141,7 +141,7 @@ void BkColor(int N){
 }
 
 void PrintGrid(){
-    int x, y,  // x and y coordinate
+    int x, y,  // x and y coordinate
     x_end = Width*2 -1,
     y_end = Height*2-1,
     print_x = PrintPoint_x+1, //x and y coordinates of the print point
@@ -350,10 +350,10 @@ void PrintGrid(){
                             TxColor(ccell.Path);
                             //The cells arround the current that are in the same path are stored in samepath
                             //There are 10 possibilities: only left (0x1), only right (0x2), only above (0x4), only below(0x8)
-                            //                            left and right (0x3), above and below (0xC), above and left (0x5), above and right (0x6)
-                            //                            below and left (0x9), below and right (0xA);
+                            //                            left and right (0x3), above and below (0xC), above and left (0x5), above and right (0x6)
+                            //                            below and left (0x9), below and right (0xA);
                             switch(samepath){
-                                case 0x1:  // Left
+                                case 0x1:  // Left
                                     printf(" + ");
                                     break;
                                 case 0x2: // Right
@@ -390,7 +390,7 @@ void PrintGrid(){
                             Color_Reset;
                         }
                     } else { // Empty cell
-                        printf("   ");
+                        printf("   ");
                     }
                 }
             }
@@ -404,7 +404,7 @@ void PrintGrid(){
 }
 
 void ClearGrid(){
-    int x, y,  // x and y coordinate
+    int x, y,  // x and y coordinate
     x_end = Width,
     y_end = Height*2 + 1,
     print_x = PrintPoint_x+1, //x and y coordinates of the print point
@@ -412,7 +412,7 @@ void ClearGrid(){
     printf("\033[%d;%dH", print_y++, print_x); //Move the cursor to 0; 0
     for (y = 0; y < y_end; y++){
         for (x = 0; x < x_end; x++)
-            printf("    "); //Print spaces instead of the grid
+            printf("    "); //Print spaces instead of the grid
         printf(" \033[%d;%dH", print_y++, print_x);
     }
     PrintPoint_x -= (Width * 4 + 5);
@@ -714,9 +714,9 @@ int main(int argc, char * argv[]){
         //Checking that no endpoints are in the same cell
         for (y = 0; y < x; y++){
             if (((Points[x].x_start == Points[y].x_start) && (Points[x].y_start == Points[y].y_start)) ||
-            ((Points[x].x_end == Points[y].x_end)     && (Points[x].y_end == Points[y].y_end))	  ||
-            ((Points[x].x_end == Points[y].x_start)   && (Points[x].y_end == Points[y].y_start))   ||
-            ((Points[x].x_start == Points[y].x_end)   && (Points[x].y_start == Points[y].y_end)) ) {
+            ((Points[x].x_end == Points[y].x_end)     && (Points[x].y_end == Points[y].y_end))	  ||
+            ((Points[x].x_end == Points[y].x_start)   && (Points[x].y_end == Points[y].y_start))   ||
+            ((Points[x].x_start == Points[y].x_end)   && (Points[x].y_start == Points[y].y_end)) ) {
                 fprintf(stderr, "Error: data conflict\nThe endpoints of the path %d must be different from the path %d's one\n", x+1, y+1);
                 free(Points);
                 abort();
@@ -743,12 +743,12 @@ int main(int argc, char * argv[]){
     //For a description of the format of the grid's cell go where I defined the struct _Cell
     for (x = 0; x < Points_Len; x++){
         GameCell(Points[x].x_start, Points[x].y_start).Path = (x+1);
-        GameCell(Points[x].x_start, Points[x].y_start).ID   = 0;
-        GameCell(Points[x].x_end  , Points[x].y_end  ).Path = (x+1);
-        GameCell(Points[x].x_end  , Points[x].y_end  ).ID   = ULONG_MAX;
+        GameCell(Points[x].x_start, Points[x].y_start).ID   = 0;
+        GameCell(Points[x].x_end  , Points[x].y_end  ).Path = (x+1);
+        GameCell(Points[x].x_end  , Points[x].y_end  ).ID   = ULONG_MAX;
     }
 #ifdef RANDOM_COLOR
-    srand(time(NULL));  //Starts the random generator
+    srand(time(NULL));  //Starts the random generator
     Randq = rand();
     Randm = rand();
 #endif
@@ -764,7 +764,7 @@ int main(int argc, char * argv[]){
         exit(-1);
     } else {
         gettimeofday(&end, NULL);
-        printf("\n\n.----------.\n| Success! |   Time taken: %.6f seconds\n'----------'   Tried out %llu paths\n", ((end.tv_sec + (double)end.tv_usec/1e6) - (start.tv_sec + (double)start.tv_usec/1e6)), TriedOutPaths);
+        printf("\n\n.----------.\n| Success! |   Time taken: %.6f seconds\n'----------'   Tried out %llu paths\n", ((end.tv_sec + (double)end.tv_usec/1e6) - (start.tv_sec + (double)start.tv_usec/1e6)), TriedOutPaths);
         if (solutionsfound == 0)
             printf("Were found no solutions :(\n");
         else if (solutionsfound == 1)
